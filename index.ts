@@ -3,10 +3,12 @@ import cors from "cors";
 import https from "https";
 import fs from "fs";
 import db from "./db/db";
+import AuthRouter from "./routes/AuthRouter";
 
 const app = express();
 
-app.use(cors()); // Restrict CORS on Prod
+app.use(cors()); // Make sure to restrict CORS on Prod
+app.use(express.json()); //For JSON Parsingj
 
 db();
 
@@ -15,6 +17,8 @@ db();
 app.get("/", (req, res) => {
   res.send("Hello There");
 });
+
+app.use("/auth", AuthRouter);
 
 //----------------------------------------
 

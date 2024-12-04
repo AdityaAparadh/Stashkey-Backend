@@ -21,7 +21,7 @@ export interface ITrustee {
   /**
    * The secret passphrase of the trustee, used to gain access to encrypted vault.
    * Assigned by the system.
-   * This is NOT the Shamir's Key Component.
+   * This is NOT the actual key share of Shamir' Secret Sharing Scheme, and cannot be used for Vault Decryption.
    * string of size 14 consisting of lowercase alphabets and numbers
    * @type {string}
    * @example b12lkaclkzfoqp

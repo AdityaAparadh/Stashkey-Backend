@@ -10,6 +10,7 @@ export interface IUser extends Document {
    * @example user123
    */
   username: string;
+
   /**
    * The hashed password of the user. Used only for authentication. Cannot be used for decryption.
    * @type {string}
