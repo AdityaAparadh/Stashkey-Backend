@@ -4,6 +4,7 @@ import https from "https";
 import fs from "fs";
 import db from "./db/db";
 import AuthRouter from "./routes/AuthRouter";
+import VaultRouter from "./routes/VaultRouter";
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/auth", AuthRouter);
+app.use("/vault", VaultRouter);
 
 //----------------------------------------
 
