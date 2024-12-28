@@ -3,6 +3,7 @@ import cors from "cors";
 import https from "https";
 import fs from "fs";
 import db from "./db/db";
+import { config } from "./utils/config";
 import AuthRouter from "./routes/AuthRouter";
 import VaultRouter from "./routes/VaultRouter";
 
@@ -12,6 +13,7 @@ app.use(cors()); // Make sure to restrict CORS on Prod
 app.use(express.json()); //For JSON Parsingj
 
 db();
+config();
 
 //----------------------------------------
 

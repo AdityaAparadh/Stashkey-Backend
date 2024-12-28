@@ -3,21 +3,7 @@ import jwt from "jsonwebtoken";
 import User from "../models/User";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { s3 } from "../utils/s3";
-
-let JWT_SECRET: string;
-let BCRYPT_COST: string;
-
-if (process.env.JWT_SECRET) {
-  JWT_SECRET = process.env.JWT_SECRET;
-} else {
-  throw new Error("JWT_SECRET not set as environment variable");
-}
-if (process.env.BCRYPT_COST) {
-  BCRYPT_COST = process.env.BCRYPT_COST;
-} else {
-  throw new Error("BCRYPT_COST not set as environment variable");
-}
-
+import { JWT_SECRET, BCRYPT_COST } from "../utils/config";
 /**
  * Checks credentials of the user, if valid, responds with a signed JWT token. Otherwise responds with the appropriate HTTP status code.
  * @param req The Request Object
@@ -65,13 +51,13 @@ export const Login = async (req: Request, res: Response) => {
  */
 
 export const Signup = async (req: Request, res: Response) => {
-  console.log("HERE");
   try {
     if (!req.body.username || !req.body.password || !req.body.iv || !req.file) {
       res.sendStatus(400);
       return;
     }
     const user = await User.findOne({ username: req.body.username });
+
     if (user) {
       res.status(400).send("User already exists");
       return;

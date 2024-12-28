@@ -5,6 +5,8 @@ import type { IJWTPayload } from "../types/IJwtPayload";
 const Auth = (req: Request, res: Response, next: NextFunction) => {
   try {
     const ReqUsername: string = req.body.username;
+    console.log(ReqUsername);
+    console.log(req.body);
     const token: string | undefined = req
       .header("Authorization")
       ?.split(" ")[1];
@@ -29,10 +31,11 @@ const Auth = (req: Request, res: Response, next: NextFunction) => {
     }
 
     //Very Important :-)
-    if (decodedToken && decodedToken.username === ReqUsername) {
+    if (decodedToken) {
+      req.body.username = decodedToken.username;
       next();
     } else {
-      console.log("Token Mismatch");
+      console.log("Unable to decode Token");
       res.status(401).send("Unauthorized");
     }
   } catch (err) {
