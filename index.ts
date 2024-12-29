@@ -6,10 +6,16 @@ import db from "./db/db";
 import { config } from "./utils/config";
 import AuthRouter from "./routes/AuthRouter";
 import VaultRouter from "./routes/VaultRouter";
+import cookieParser from "cookie-parser";
 
 const app = express();
-
-app.use(cors()); // Make sure to restrict CORS on Prod
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  }),
+); // Make sure to restrict CORS on Prod
+app.use(cookieParser());
 app.use(express.json()); //For JSON Parsingj
 
 db();

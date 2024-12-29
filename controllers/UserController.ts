@@ -43,6 +43,10 @@ export const Login = async (req: Request, res: Response) => {
     );
     res.cookie("token", token, {
       httpOnly: true,
+      path: "/",
+      sameSite: "strict",
+      // secure: process.env.NODE_ENV === "production",
+      secure: true,
       expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
     });
     res.sendStatus(200);
