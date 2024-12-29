@@ -4,8 +4,9 @@ import User from "../models/User";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { s3 } from "../utils/s3";
 import { JWT_SECRET, BCRYPT_COST } from "../utils/config";
+import type { IJWTRefresh } from "../types/IJwtRefresh";
 /**
- * Checks credentials of the user, if valid, responds with a signed JWT token. Otherwise responds with the appropriate HTTP status code.
+ * Checks if the refresh token is valid, if valid, responds with a signed auth JWT token valid for 15m. Otherwise responds with the appropriate HTTP status code.
  * @param req The Request Object
  * @param res The Response Object
  */
@@ -33,9 +34,72 @@ export const Login = async (req: Request, res: Response) => {
       return;
     }
 
-    const token = jwt.sign({ username: user?.username }, JWT_SECRET, {
-      expiresIn: "15m",
+    const token = jwt.sign(
+      { username: user?.username, type: "auth" },
+      JWT_SECRET,
+      {
+        expiresIn: "1d",
+      },
+    );
+    res.cookie("token", token, {
+      httpOnly: true,
+      expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
     });
+    res.sendStatus(200);
+  } catch (err) {
+    console.error(err);
+    res.sendStatus(500);
+  }
+};
+
+/**
+ * Checks credentials of the user, if valid, responds with a signed refresh JWT token. Otherwise responds with the appropriate HTTP status code.
+ * @param req The Request Object
+ * @param res The Response Object
+ */
+
+export const Refresh = async (req: Request, res: Response) => {
+  try {
+    const user = await User.findOne({ username: req.body.username });
+
+    if (!user) {
+      res.sendStatus(404);
+      return;
+    }
+
+    const cookie = req.headers.cookie;
+    if (!cookie) {
+      res.sendStatus(401);
+      return;
+    }
+
+    const authToken = cookie.split("=")[1];
+    let decodedToken: IJWTRefresh;
+    try {
+      decodedToken = jwt.verify(
+        authToken as string,
+        process.env.JWT_SECRET as string,
+      ) as IJWTRefresh;
+    } catch (err) {
+      if (err instanceof jwt.TokenExpiredError) {
+        res.status(401).send("Token Expired");
+        return;
+      }
+      res.status(401).send("Invalid Token");
+      return;
+    }
+    if (decodedToken.type != "auth") {
+      res.sendStatus(401);
+      return;
+    }
+
+    const token = jwt.sign(
+      { username: user?.username, type: "refresh" },
+      JWT_SECRET,
+      {
+        expiresIn: "15m",
+      },
+    );
 
     res.send({ token });
   } catch (err) {

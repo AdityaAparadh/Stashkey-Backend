@@ -27,8 +27,8 @@ app.use("/vault", VaultRouter);
 //----------------------------------------
 
 const sslConfig = {
-  key: fs.readFileSync("cert/server.key"),
-  cert: fs.readFileSync("cert/server.crt"),
+  key: fs.readFileSync("certificates/server.key"),
+  cert: fs.readFileSync("certificates/server.crt"),
 };
 
 const server = https.createServer(sslConfig, app);
