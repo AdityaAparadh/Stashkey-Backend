@@ -44,11 +44,12 @@ export const Login = async (req: Request, res: Response) => {
     res.cookie("token", token, {
       httpOnly: true,
       path: "/",
-      sameSite: "strict",
+      sameSite: "none",
       // secure: process.env.NODE_ENV === "production",
       secure: true,
       expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
     });
+
     res.sendStatus(200);
   } catch (err) {
     console.error(err);
@@ -166,6 +167,21 @@ export const Signup = async (req: Request, res: Response) => {
 
     await newUser.save();
     res.sendStatus(201);
+  } catch (err) {
+    console.error(err);
+    res.sendStatus(500);
+  }
+};
+
+export const SignOut = async (req: Request, res: Response) => {
+  try {
+    res.clearCookie("token", {
+      httpOnly: true,
+      path: "/",
+      sameSite: "none",
+      secure: true,
+    });
+    res.sendStatus(200);
   } catch (err) {
     console.error(err);
     res.sendStatus(500);
