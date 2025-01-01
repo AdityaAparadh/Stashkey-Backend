@@ -16,7 +16,7 @@ app.use(
   }),
 ); // Make sure to restrict CORS on Prod
 app.use(cookieParser());
-app.use(express.json()); //For JSON Parsingj
+app.use(express.json()); //For JSON Parsing
 
 db();
 config();

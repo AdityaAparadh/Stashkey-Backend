@@ -9,6 +9,12 @@ let BUCKET_REGION: string;
 let ACCESS_KEY_ID: string;
 let SECRET_ACCESS_KEY: string;
 
+let WINDOW_SIZE_MINUTES: string;
+let SIGNUP_REQ_PER_WINDOW: string;
+let LOGIN_REQ_PER_WINDOW: string;
+let FETCH_REQ_PER_WINDOW: string;
+let UPDATE_REQ_PER_WINDOW: string;
+
 export const config = () => {
   if (process.env.JWT_SECRET) {
     JWT_SECRET = process.env.JWT_SECRET;
@@ -55,6 +61,35 @@ export const config = () => {
   } else {
     throw new Error("SECRET_ACCESS_KEY not set as environment variable");
   }
+
+  if (process.env.WINDOW_SIZE_MINUTES) {
+    WINDOW_SIZE_MINUTES = process.env.WINDOW_SIZE_MINUTES;
+  } else {
+    throw new Error("WINDOW_SIZE_MINUTES not set as environment variable");
+  }
+
+  if (process.env.SIGNUP_REQ_PER_WINDOW) {
+    SIGNUP_REQ_PER_WINDOW = process.env.SIGNUP_REQ_PER_WINDOW;
+  } else {
+    throw new Error("SIGNUP_REQ_PER_WINDOW not set as environment variable");
+  }
+
+  if (process.env.LOGIN_REQ_PER_WINDOW) {
+    LOGIN_REQ_PER_WINDOW = process.env.LOGIN_REQ_PER_WINDOW;
+  } else {
+    throw new Error("LOGIN_REQ_PER_WINDOW not set as environment variable");
+  }
+
+  if (process.env.FETCH_REQ_PER_WINDOW) {
+    FETCH_REQ_PER_WINDOW = process.env.FETCH_REQ_PER_WINDOW;
+  } else {
+    throw new Error("FETCH_REQ_PER_WINDOW not set as environment variable");
+  }
+  if (process.env.UPDATE_REQ_PER_WINDOW) {
+    UPDATE_REQ_PER_WINDOW = process.env.UPDATE_REQ_PER_WINDOW;
+  } else {
+    throw new Error("UPDATE_REQ_PER_WINDOW not set as environment variable");
+  }
 };
 
 export {
@@ -66,4 +101,9 @@ export {
   BUCKET_REGION,
   ACCESS_KEY_ID,
   SECRET_ACCESS_KEY,
+  WINDOW_SIZE_MINUTES,
+  SIGNUP_REQ_PER_WINDOW,
+  LOGIN_REQ_PER_WINDOW,
+  FETCH_REQ_PER_WINDOW,
+  UPDATE_REQ_PER_WINDOW,
 };
