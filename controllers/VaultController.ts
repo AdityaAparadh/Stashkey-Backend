@@ -18,14 +18,14 @@ export const getVault = async (req: Request, res: Response) => {
       res.sendStatus(404);
       return;
     }
-
+    const iv = user.initialization_vector;
     const command = new GetObjectCommand({
       Bucket: process.env.BUCKET_NAME,
       Key: user.current_checksum,
     });
 
     const vault_url = await getSignedUrl(s3, command, { expiresIn: 3600 });
-    res.send({ vault_url });
+    res.send({ vault_url, iv });
   } catch (err) {
     console.error(err);
     res.sendStatus(500);
@@ -40,6 +40,8 @@ export const getVault = async (req: Request, res: Response) => {
 export const setVault = async (req: Request, res: Response) => {
   try {
     if (!req.body.username || !req.body.iv || !req.file) {
+      console.log(req.body);
+      console.log(req.file);
       res.sendStatus(400);
       return;
     }
@@ -63,6 +65,7 @@ export const setVault = async (req: Request, res: Response) => {
     const hasher = new Bun.CryptoHasher("sha256");
     hasher.update(req.file.buffer.buffer);
     hasher.update(req.body.username);
+    hasher.update(req.body.iv);
     const hashed_checksum = hasher.digest("hex");
 
     const putCommand = new PutObjectCommand({

@@ -3,7 +3,8 @@ import jwt from "jsonwebtoken";
 import User from "../models/User";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { s3 } from "../utils/s3";
-import { JWT_SECRET, BCRYPT_COST } from "../utils/config";
+// import { JWT_SECRET, BCRYPT_COST } from "../utils/config";
+import config from "../utils/config";
 import type { IJWTRefresh } from "../types/IJwtRefresh";
 /**
  * Checks if the refresh token is valid, if valid, responds with a signed auth JWT token valid for 15m. Otherwise responds with the appropriate HTTP status code.
@@ -37,7 +38,7 @@ export const Login = async (req: Request, res: Response) => {
 
     const token = jwt.sign(
       { username: user?.username, type: "auth" },
-      JWT_SECRET,
+      config.JWT_SECRET,
       {
         expiresIn: "1d",
       },
@@ -78,8 +79,8 @@ export const Refresh = async (req: Request, res: Response) => {
       res.sendStatus(401);
       return;
     }
-
     const authToken = cookie.split("=")[1];
+    console.log(authToken);
     let decodedToken: IJWTRefresh;
     try {
       decodedToken = jwt.verify(
@@ -101,7 +102,7 @@ export const Refresh = async (req: Request, res: Response) => {
 
     const token = jwt.sign(
       { username: user?.username, type: "refresh" },
-      JWT_SECRET,
+      config.JWT_SECRET,
       {
         expiresIn: "15m",
       },
@@ -129,14 +130,14 @@ export const Signup = async (req: Request, res: Response) => {
     const user = await User.findOne({ username: req.body.username });
 
     if (user) {
-      res.status(400).send("User already exists");
+      res.status(409).send("User already exists");
       return;
     }
 
     // Password Hashing
     const hashed_password = await Bun.password.hash(req.body.password, {
       algorithm: "bcrypt",
-      cost: parseInt(BCRYPT_COST),
+      cost: parseInt(config.BCRYPT_COST),
     });
 
     // File Hashing

@@ -1,109 +1,49 @@
-let BACKEND_PORT: string;
-let JWT_SECRET: string;
-let BCRYPT_COST: string;
+interface Config {
+  BACKEND_PORT: string;
+  JWT_SECRET: string;
+  BCRYPT_COST: string;
+  MONGO_URI: string;
+  BUCKET_NAME: string;
+  BUCKET_REGION: string;
+  ACCESS_KEY_ID: string;
+  SECRET_ACCESS_KEY: string;
+  WINDOW_SIZE_MINUTES: string;
+  SIGNUP_REQ_PER_WINDOW: string;
+  LOGIN_REQ_PER_WINDOW: string;
+  FETCH_REQ_PER_WINDOW: string;
+  UPDATE_REQ_PER_WINDOW: string;
+  AWS_ENDPOINT_URL: string;
+}
 
-let MONGO_URI: string;
-
-let BUCKET_NAME: string;
-let BUCKET_REGION: string;
-let ACCESS_KEY_ID: string;
-let SECRET_ACCESS_KEY: string;
-
-let WINDOW_SIZE_MINUTES: string;
-let SIGNUP_REQ_PER_WINDOW: string;
-let LOGIN_REQ_PER_WINDOW: string;
-let FETCH_REQ_PER_WINDOW: string;
-let UPDATE_REQ_PER_WINDOW: string;
-
-export const config = () => {
-  if (process.env.JWT_SECRET) {
-    JWT_SECRET = process.env.JWT_SECRET;
-  } else {
-    throw new Error("JWT_SECRET not set as environment variable");
+/**
+ * Helper function to retrieve and validate environment variables.
+ * @param key - The name of the environment variable.
+ * @returns The value of the environment variable.
+ * @throws Error if the environment variable is not set.
+ */
+const getEnvVariable = (key: keyof Config): string => {
+  const value = process.env[key];
+  if (!value) {
+    throw new Error(`Environment variable ${key} is not set.`);
   }
-  if (process.env.BCRYPT_COST) {
-    BCRYPT_COST = process.env.BCRYPT_COST;
-  } else {
-    throw new Error("BCRYPT_COST not set as environment variable");
-  }
-
-  if (process.env.BACKEND_PORT) {
-    BACKEND_PORT = process.env.BACKEND_PORT;
-  } else {
-    throw new Error("BACKEND_PORT not set as environment variable");
-  }
-  if (process.env.MONGO_URI) {
-    MONGO_URI = process.env.MONGO_URI;
-  } else {
-    throw new Error("MONGO_URI not set as environment variable");
-  }
-
-  if (process.env.BUCKET_NAME) {
-    BUCKET_NAME = process.env.BUCKET_NAME;
-  } else {
-    throw new Error("BUCKET_NAME not set as environment variable");
-  }
-
-  if (process.env.BUCKET_REGION) {
-    BUCKET_REGION = process.env.BUCKET_REGION;
-  } else {
-    throw new Error("BUCKET_REGION not set as environment variable");
-  }
-
-  if (process.env.ACCESS_KEY_ID) {
-    ACCESS_KEY_ID = process.env.ACCESS_KEY_ID;
-  } else {
-    throw new Error("ACCESS_KEY_ID not set as environment variable");
-  }
-
-  if (process.env.SECRET_ACCESS_KEY) {
-    SECRET_ACCESS_KEY = process.env.SECRET_ACCESS_KEY;
-  } else {
-    throw new Error("SECRET_ACCESS_KEY not set as environment variable");
-  }
-
-  if (process.env.WINDOW_SIZE_MINUTES) {
-    WINDOW_SIZE_MINUTES = process.env.WINDOW_SIZE_MINUTES;
-  } else {
-    throw new Error("WINDOW_SIZE_MINUTES not set as environment variable");
-  }
-
-  if (process.env.SIGNUP_REQ_PER_WINDOW) {
-    SIGNUP_REQ_PER_WINDOW = process.env.SIGNUP_REQ_PER_WINDOW;
-  } else {
-    throw new Error("SIGNUP_REQ_PER_WINDOW not set as environment variable");
-  }
-
-  if (process.env.LOGIN_REQ_PER_WINDOW) {
-    LOGIN_REQ_PER_WINDOW = process.env.LOGIN_REQ_PER_WINDOW;
-  } else {
-    throw new Error("LOGIN_REQ_PER_WINDOW not set as environment variable");
-  }
-
-  if (process.env.FETCH_REQ_PER_WINDOW) {
-    FETCH_REQ_PER_WINDOW = process.env.FETCH_REQ_PER_WINDOW;
-  } else {
-    throw new Error("FETCH_REQ_PER_WINDOW not set as environment variable");
-  }
-  if (process.env.UPDATE_REQ_PER_WINDOW) {
-    UPDATE_REQ_PER_WINDOW = process.env.UPDATE_REQ_PER_WINDOW;
-  } else {
-    throw new Error("UPDATE_REQ_PER_WINDOW not set as environment variable");
-  }
+  return value;
 };
 
-export {
-  JWT_SECRET,
-  BCRYPT_COST,
-  BACKEND_PORT,
-  MONGO_URI,
-  BUCKET_NAME,
-  BUCKET_REGION,
-  ACCESS_KEY_ID,
-  SECRET_ACCESS_KEY,
-  WINDOW_SIZE_MINUTES,
-  SIGNUP_REQ_PER_WINDOW,
-  LOGIN_REQ_PER_WINDOW,
-  FETCH_REQ_PER_WINDOW,
-  UPDATE_REQ_PER_WINDOW,
+const config: Config = {
+  BACKEND_PORT: getEnvVariable("BACKEND_PORT"),
+  JWT_SECRET: getEnvVariable("JWT_SECRET"),
+  BCRYPT_COST: getEnvVariable("BCRYPT_COST"),
+  MONGO_URI: getEnvVariable("MONGO_URI"),
+  BUCKET_NAME: getEnvVariable("BUCKET_NAME"),
+  BUCKET_REGION: getEnvVariable("BUCKET_REGION"),
+  ACCESS_KEY_ID: getEnvVariable("ACCESS_KEY_ID"),
+  SECRET_ACCESS_KEY: getEnvVariable("SECRET_ACCESS_KEY"),
+  WINDOW_SIZE_MINUTES: getEnvVariable("WINDOW_SIZE_MINUTES"),
+  SIGNUP_REQ_PER_WINDOW: getEnvVariable("SIGNUP_REQ_PER_WINDOW"),
+  LOGIN_REQ_PER_WINDOW: getEnvVariable("LOGIN_REQ_PER_WINDOW"),
+  FETCH_REQ_PER_WINDOW: getEnvVariable("FETCH_REQ_PER_WINDOW"),
+  UPDATE_REQ_PER_WINDOW: getEnvVariable("UPDATE_REQ_PER_WINDOW"),
+  AWS_ENDPOINT_URL: getEnvVariable("AWS_ENDPOINT_URL"),
 };
+
+export default config;
